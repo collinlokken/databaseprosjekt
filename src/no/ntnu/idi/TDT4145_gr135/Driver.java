@@ -4,6 +4,10 @@ import java.sql.*;
 
 import java.util.Scanner;
 
+/*
+@author Christopher Collin Løkken
+*/
+
 public class Driver {
 
 	public static void main(String[] args) {
