@@ -17,11 +17,19 @@ public class Driver {
 		try {
 
 			if (ls[0].equals("get")) {
-				Statement statement = conn.createStatement();
+				
 				String query = "SELECT * FROM " + ls[1];
+				Statement statement = conn.createStatement();
 				ResultSet rs = statement.executeQuery(query);
-				System.out.println("No va du lur, ja");
-				return rs.toString();
+				String result = "";
+				while(rs.next()) {
+					result += "| Excercise";
+					result += rs.getInt("ExcerciseID")+	" | ";
+					result += rs.getString("Name")+		" | ";
+					result += rs.getString("Type")+		" |";
+				}
+				
+				return result;
 			}
 			else if (ls[0].equals("post")){
 				PreparedStatement stmt = conn.prepareStatement(
@@ -35,6 +43,7 @@ public class Driver {
 			}
 		}
 		catch (SQLException e) {
+			System.out.println("-- You got an error loser --");
 			System.out.println(e.getMessage());
 		}
 		return null;
