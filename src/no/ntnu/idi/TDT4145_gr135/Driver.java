@@ -9,7 +9,7 @@ import java.util.Scanner;
 */
 
 public class Driver {
-	public ResultSet command(String cmd, Connection conn) {
+	public static ResultSet command(String cmd, Connection conn) {
 		
 		String[] ls = cmd.split("-");
 		try {
@@ -20,9 +20,9 @@ public class Driver {
 				return rs;
 			}
 			else if (ls[0] == "post"){
-				String query = "INSERT INTO " + ls[1] + "values(";
-				Scanner val = new Scanner(System.in);
-				
+				String query = "INSERT INTO " + ls[1] + "values("+ ls[2] +","+ ls[3]+","+ls[4];
+				ResultSet rs = stmt.executeQuery(query);
+				return rs;			
 			}
 		}
 		catch (SQLException e) {
@@ -159,10 +159,11 @@ public class Driver {
 			
 			while (true) {
 				
-				Scanner command = new Scanner(System.in);
-				String cmd = command.next();
-				command.close();
+				System.out.println("enter command");
+				String cmd = input.next();
 				
+				ResultSet rs = command(cmd, conn);
+				System.out.println(rs);
 			}
 			
 		}
