@@ -11,7 +11,7 @@ import static java.lang.Integer.parseInt;
 */
 
 public class Driver {
-	public static ResultSet command(String cmd, Connection conn) {
+	public static String command(String cmd, Connection conn) {
 		
 		String[] ls = cmd.split("-");
 		try {
@@ -21,19 +21,17 @@ public class Driver {
 				String query = "SELECT * FROM " + ls[1];
 				ResultSet rs = statement.executeQuery(query);
 				System.out.println("No va du lur, ja");
-				return rs;
+				return rs.toString();
 			}
 			else if (ls[0].equals("post")){
 				PreparedStatement stmt = conn.prepareStatement(
 						"INSERT INTO " + ls[1] + " VALUES(?, ?, ?)"
 				);
-				String query = "INSERT INTO " + ls[1] + " VALUES(" + ls[2] +","+ ls[3]+","+ls[4] + ")";
 				stmt.setInt(1, Integer.parseInt(ls[2]));
 				stmt.setString(2, ls[3]);
 				stmt.setString(3, ls[4]);
 				stmt.execute();
-				System.out.println("Yo ho ho, maddafakka!");
-				return null;
+				return "Yo ho ho, maddafakka!";
 			}
 		}
 		catch (SQLException e) {
@@ -173,7 +171,7 @@ public class Driver {
 				System.out.println("enter command");
 				String cmd = input.next();
 				
-				ResultSet rs = command(cmd, conn1);
+				String rs = command(cmd, conn1);
 				System.out.println(rs);
 			}
 			
