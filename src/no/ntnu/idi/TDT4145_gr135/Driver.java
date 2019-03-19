@@ -4,8 +4,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static java.lang.Integer.parseInt;
+
 /*
-@author Christopher Collin Løkken
+@author Christopher Collin Lï¿½kken
 */
 
 public class Driver {
@@ -13,20 +15,29 @@ public class Driver {
 		
 		String[] ls = cmd.split("-");
 		try {
-			Statement stmt = conn.createStatement();
-			if (ls[0] == "get") {
+
+			if (ls[0].equals("get")) {
+				Statement statement = conn.createStatement();
 				String query = "SELECT * FROM " + ls[1];
-				ResultSet rs = stmt.executeQuery(query);
+				ResultSet rs = statement.executeQuery(query);
+				System.out.println("No va du lur, ja");
 				return rs;
 			}
-			else if (ls[0] == "post"){
-				String query = "INSERT INTO " + ls[1] + "values("+ ls[2] +","+ ls[3]+","+ls[4];
-				ResultSet rs = stmt.executeQuery(query);
-				return rs;			
+			else if (ls[0].equals("post")){
+				PreparedStatement stmt = conn.prepareStatement(
+						"INSERT INTO " + ls[1] + " VALUES(?, ?, ?)"
+				);
+				String query = "INSERT INTO " + ls[1] + " VALUES(" + ls[2] +","+ ls[3]+","+ls[4] + ")";
+				stmt.setInt(1, Integer.parseInt(ls[2]));
+				stmt.setString(2, ls[3]);
+				stmt.setString(3, ls[4]);
+				stmt.execute();
+				System.out.println("Yo ho ho, maddafakka!");
+				return null;
 			}
 		}
 		catch (SQLException e) {
-			System.out.println("Uh-oh! Bad command... "); 
+			System.out.println(e.getMessage());
 		}
 		return null;
 	}
@@ -162,7 +173,7 @@ public class Driver {
 				System.out.println("enter command");
 				String cmd = input.next();
 				
-				ResultSet rs = command(cmd, conn);
+				ResultSet rs = command(cmd, conn1);
 				System.out.println(rs);
 			}
 			
