@@ -1,7 +1,7 @@
 package no.ntnu.idi.TDT4145_gr135;
 
 import java.sql.*;
-
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /*
@@ -9,6 +9,27 @@ import java.util.Scanner;
 */
 
 public class Driver {
+	public ResultSet command(String cmd, Connection conn) {
+		
+		String[] ls = cmd.split("-");
+		try {
+			Statement stmt = conn.createStatement();
+			if (ls[0] == "get") {
+				String query = "SELECT * FROM " + ls[1];
+				ResultSet rs = stmt.executeQuery(query);
+				return rs;
+			}
+			else if (ls[0] == "post"){
+				String query = "INSERT INTO " + ls[1] + "values(";
+				Scanner val = new Scanner(System.in);
+				
+			}
+		}
+		catch (SQLException e) {
+			System.out.println("Uh-oh! Bad command... "); 
+		}
+		return null;
+	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -19,9 +40,11 @@ public class Driver {
 			
 			System.out.println("enter database password");
 			String psw = input.next();
-			input.close();			
 			
-			Connection conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/?user="+usr+"&password="+psw+"&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			
+			String url = "jdbc:mysql://127.0.0.1:3306/";
+			Connection conn = DriverManager.getConnection(url+"?user="+usr+"&password="+psw+"&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
 			
 			PreparedStatement ps = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS gruppe135_treningsdatabase");
 			int result = ps.executeUpdate();
@@ -32,7 +55,7 @@ public class Driver {
 				System.out.println("An error has occured... please try again.");
 			}
 			
-			Connection conn1 = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/gruppe135_treningsdatabase?user="+usr+"&password="+psw+"&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+			Connection conn1 = DriverManager.getConnection(url+"gruppe135_treningsdatabase?user="+usr+"&password="+psw+"&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
 			final String sql0 = "CREATE TABLE IF NOT EXISTS `workout`( /* class */\r\n" + 
 					"`WorkoutID` int(11) not null primary key,\r\n" + 
 					"`Date` int(11) not null,\r\n" + 
@@ -134,10 +157,16 @@ public class Driver {
 			
 			System.out.println("Tables succsessfully created.");
 			
-			
+			while (true) {
+				
+				Scanner command = new Scanner(System.in);
+				String cmd = command.next();
+				command.close();
+				
+			}
 			
 		}
-		catch (SQLException exc){
+		catch (SQLException | InstantiationException | IllegalAccessException | ClassNotFoundException exc){
 			exc.printStackTrace();
 		}
 
