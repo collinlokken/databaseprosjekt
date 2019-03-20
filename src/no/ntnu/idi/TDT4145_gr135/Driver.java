@@ -5,18 +5,20 @@ import java.util.Scanner;
 
 /*
 @author Christopher Collin Loekken
+
+post-workouts-1-030419-0910-2-5-5
 */
 
 public class Driver {
 	
 	public static void command(String cmd, Connection conn) {
 		String[] ls = cmd.split("-");
-		for(String s: ls) {
-			System.out.println(s);
-		}
+		
+		String command = ls[0];
 		String table = ls[1];
+		
 		if (table.equals("excercise")) {
-			if (ls[0].equals("post")) {
+			if (command.equals("post")) {
 				Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
 				excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
 			} else if (ls[0].equals("get")) {
@@ -27,10 +29,39 @@ public class Driver {
 
 		}
 		else if (table.equals("workout")) {
-			//workout(ls, conn);
+			workout(ls, conn);
 		}
 		else if (table.equals("equipment")) {
-			//equipment(ls, conn);
+			equipment(ls, conn);
+
+			if (command.equals("get")) {
+				
+			}
+		}
+		else if (table.equals("workouts")) {
+			if (command.equals("get")) {
+				Workout[] workouts = Workout.retrieveWorkoutsFromDB(conn);
+				for (Workout workout:workouts) {
+					System.out.println(workout);
+				}
+				
+			}
+			else if (command.equals("post")) {
+				int workoutID = Integer.parseInt(ls[2]);
+				int date = Integer.parseInt(ls[3]);
+				int time = Integer.parseInt(ls[4]);
+				int length = Integer.parseInt(ls[5]);
+				int performance = Integer.parseInt(ls[6]);
+				int personalShape = Integer.parseInt(ls[7]);
+				Workout workout = Workout.insertWorkoutIntoDB(workoutID, date, time, length, performance, personalShape, conn);
+				System.out.println("Created : "+workout);
+			}
+		}
+		else if (table.equals("equipment")) {
+			if (command.equals("get")) {
+				
+			}
+>>>>>>> 4a3111fe3f7efc6632fe8aaad6f3b3cda50021fc
 		}
 		
 	}
@@ -64,8 +95,7 @@ public class Driver {
 					"`WorkoutID` int(11) not null primary key,\r\n" + 
 					"`Date` int(11) not null,\r\n" + 
 					"`Time` int(11) not null,\r\n" + 
-					"`Length` int(11) not null,\r\n" + 
-					"`InfoAboutExcercises` varchar(100) default null,\r\n" + 
+					"`Length` int(11) not null,\r\n" +
 					"`PersonalShape` int(11) not null,\r\n" + 
 					"`Performance` int(11) not null\r\n" + 
 					")";
