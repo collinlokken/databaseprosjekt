@@ -61,7 +61,6 @@ public class Driver {
 			if (command.equals("get")) {
 				
 			}
->>>>>>> 4a3111fe3f7efc6632fe8aaad6f3b3cda50021fc
 		}
 		
 	}
