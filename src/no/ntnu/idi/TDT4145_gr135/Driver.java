@@ -16,8 +16,15 @@ public class Driver {
 		}
 		String table = ls[1];
 		if (table.equals("excercise")) {
-			Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
-			excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
+			if (ls[0].equals("post")) {
+				Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
+				excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
+			} else if (ls[0].equals("get")) {
+
+			} else {
+				throw new IllegalArgumentException("First word must me get or post");
+			}
+
 		}
 		else if (table.equals("workout")) {
 			//workout(ls, conn);
