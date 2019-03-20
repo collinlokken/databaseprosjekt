@@ -1,56 +1,34 @@
 package no.ntnu.idi.TDT4145_gr135;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
-import static java.lang.Integer.parseInt;
-
 /*
-@author Christopher Collin L�kken
+@author Christopher Collin Loekken
 */
 
 public class Driver {
-	public static String command(String cmd, Connection conn) {
-		
+	
+	public static void command(String cmd, Connection conn) {
 		String[] ls = cmd.split("-");
-		try {
-
-			if (ls[0].equals("get")) {
-				
-				String query = "SELECT * FROM " + ls[1];
-				Statement statement = conn.createStatement();
-				ResultSet rs = statement.executeQuery(query);
-				String result = "";
-				while(rs.next()) {
-					result += "| Excercise";
-					result += rs.getInt("ExcerciseID")+	" | ";
-					result += rs.getString("Name")+		" | ";
-					result += rs.getString("Type")+		" |";
-				}
-				
-				return result;
-			}
-			else if (ls[0].equals("post")){
-				PreparedStatement stmt = conn.prepareStatement(
-						"INSERT INTO " + ls[1] + " VALUES(?, ?, ?)"
-				);
-				stmt.setInt(1, Integer.parseInt(ls[2]));
-				stmt.setString(2, ls[3]);
-				stmt.setString(3, ls[4]);
-				stmt.execute();
-				return "Yo ho ho, maddafakka!";
-			}
+		for(String s: ls) {
+			System.out.println(s);
 		}
-		catch (SQLException e) {
-			System.out.println("-- You got an error loser --");
-			System.out.println(e.getMessage());
+		String table = ls[1];
+		if (table.equals("excercise")) {
+			excercise(ls,conn);
 		}
-		return null;
+		else if (table.equals("workout")) {
+			workout(ls, conn);
+		}
+		else if (table.equals("equipment")) {
+			equipment(ls, conn);
+		}
+		
 	}
-
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		try {
 			Scanner input = new Scanner(System.in);
 			System.out.println("enter database username");
@@ -179,9 +157,9 @@ public class Driver {
 				
 				System.out.println("enter command");
 				String cmd = input.next();
+				command(cmd, conn1);
 				
-				String rs = command(cmd, conn1);
-				System.out.println(rs);
+				
 			}
 			
 		}
