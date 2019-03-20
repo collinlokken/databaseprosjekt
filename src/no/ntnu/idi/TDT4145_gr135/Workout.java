@@ -1,37 +1,60 @@
 package no.ntnu.idi.TDT4145_gr135;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Workout {
 	
-	public int excerciseID;
-	public int date;
-	public int time;
-	public int length;
-	public String infoAboutExcercise;
-	public int performance;
-	public int personalShape;
+	public Integer workoutID;
+	public Integer date;
+	public Integer time;
+	public Integer length;
+	public Integer performance;
+	public Integer personalShape;
 	
-	private Workout(int excerciseID, int date, int time, int length, String info, int performance, int personalShape) {
-		this.excerciseID = excerciseID;
+	private Workout() {
+		
+	}
+	
+	public String toString() {
+		String date = ""+this.getDate();
+		String time = ""+this.getTime();
+		String day = date.substring(0,1);
+		String month = date.substring(1,3);
+		String year = date.substring(3,5);
+		String hour = time.substring(0,1);
+		String minuite = time.substring(1,3);
+		return "ID:"+ this.getWorkoutID() + "\t(" + day+"/"+month+"/"+year+"/" +"\t| "+hour+":"+minuite +"\t| "+ this.getLength() +"\t| "+ this.getPerformance() +"\t| "+this.getPersonalShape()+")";
+	}
+	
+	private Workout(int workoutID, int date, int time, int length, int performance, int personalShape) {
+		this.workoutID = workoutID;
 		this.date = date;
 		this.time = time;
 		this.length = length;
-		this.infoAboutExcercise = info;
 		this.performance = performance;
 		this.personalShape = personalShape;
 		
 	}
 	
-	public ResultSet insertWorkoutIntoDB(int excerciseID, int date, int time, int length, String info, int performance, int personalShape, Connection conn) {
+	public static Workout insertWorkoutIntoDB(int workoutID, int date, int time, int length, int performance, int personalShape, Connection conn) {
 		try {
-			String query = "INSERT INTO workout"+
-					""+
-					""+
-					""+
-					"";
-			Statement statement = conn.createStatement();
-			ResultSet rs = statement.executeQuery(query);
+			
+			String query = "INSERT INTO workout VALUES(?, ?, ?, ?, ?, ?);";
+		
+			PreparedStatement statement = conn.prepareStatement(query);
+			
+			statement.setInt(1, workoutID);
+			statement.setInt(2, date);
+			statement.setInt(3, time);
+			statement.setInt(4, length);
+			statement.setInt(5, performance);
+			statement.setInt(6, personalShape);
+			statement.execute();
+			
+			Workout result = new Workout(workoutID,date,time,length,performance,personalShape);
+			return result;
 			
 		} catch (SQLException e) {
 			System.out.println("- ERROR -");
@@ -41,12 +64,26 @@ public class Workout {
 		return null;		
 	}
 	
-	public ResultSet retrieveWorkoutFromDB(Connection conn) {
+	public static Workout[] retrieveWorkoutsFromDB(Connection conn) {
 		try {	
 			String query = "SELECT * FROM workout";
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(query);
-			return rs;
+			
+			List<Workout> workouts = new ArrayList<>();
+			while(rs.next()) {
+				Workout workout = new Workout();
+				workout.setWorkoutID(rs.getInt("workoutID"));
+				workout.setDate(rs.getInt("date"));
+				workout.setTime(rs.getInt("time"));
+				workout.setLength(rs.getInt("length"));
+				workout.setPerformance(rs.getInt("performance"));
+				workout.setPersonalShape(rs.getInt("personalShape"));
+				
+				workouts.add(workout);
+			}
+			
+			return workouts.toArray(new Workout[workouts.size()]);
 		}
 		catch(SQLException e){
 			System.out.println("- ERROR -");
@@ -55,12 +92,12 @@ public class Workout {
 		}
 	}
 
-	public int getExcerciseID() {
-		return excerciseID;
+	public int getWorkoutID() {
+		return workoutID;
 	}
 
-	public void setExcerciseID(int excerciseID) {
-		this.excerciseID = excerciseID;
+	public void setWorkoutID(int workoutID) {
+		this.workoutID = workoutID;
 	}
 
 	public int getDate() {
@@ -87,14 +124,6 @@ public class Workout {
 		this.length = length;
 	}
 
-	public String getInfoAboutExcercise() {
-		return infoAboutExcercise;
-	}
-
-	public void setInfoAboutExcercise(String infoAboutExcercise) {
-		this.infoAboutExcercise = infoAboutExcercise;
-	}
-
 	public int getPerformance() {
 		return performance;
 	}
@@ -110,33 +139,5 @@ public class Workout {
 	public void setPersonalShape(int personalShape) {
 		this.personalShape = personalShape;
 	}
-		
-		
-		
-		
-//		try {
-//	
-//			if (ls[0].equals("get")) {
-//				
-//				
-//			}
-//			else if (ls[0].equals("post")){
-//				PreparedStatement stmt = conn.prepareStatement(
-//						"INSERT INTO " + ls[1] + " VALUES(?, ?, ?)"
-//				);
-//				stmt.setInt(1, Integer.parseInt(ls[2]));
-//				stmt.setString(2, ls[3]);
-//				stmt.setString(3, ls[4]);
-//				stmt.execute();
-//				return "Values successfully inserted";
-//			}
-//		}
-//		catch (SQLException | ArrayIndexOutOfBoundsException e) {
-//			String result  = "\n- ERROR -";
-//			result += e.getMessage();
-//			return result;
-//		}
-//		return "\n";
-	
-	
+			
 }
