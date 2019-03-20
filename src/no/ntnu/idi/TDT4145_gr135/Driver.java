@@ -16,13 +16,14 @@ public class Driver {
 		}
 		String table = ls[1];
 		if (table.equals("excercise")) {
-			excercise(ls,conn);
+			Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
+			excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
 		}
 		else if (table.equals("workout")) {
-			workout(ls, conn);
+			//workout(ls, conn);
 		}
 		else if (table.equals("equipment")) {
-			equipment(ls, conn);
+			//equipment(ls, conn);
 		}
 		
 	}
