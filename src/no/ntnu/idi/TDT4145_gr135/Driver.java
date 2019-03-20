@@ -67,8 +67,6 @@ public class Driver {
 					for (Excercise excercise:excercises) {
 						System.out.println(excercise);
 					}
-				} else {
-					System.out.println("First word must be get or post");
 				}
 	
 			}
@@ -88,9 +86,7 @@ public class Driver {
 						System.out.println(equipment);
 					}
 				}
-				else {
-					System.out.println("First word must be get or post");
-				}
+				
 			}
 			else if (table.equals("workout")) {
 				
@@ -110,9 +106,7 @@ public class Driver {
 						System.out.println(workout);
 					}
 				}
-				else {
-					System.out.println("First word must be get or post");
-				}
+				
 			}
 			else {
 				System.out.println("Table name is not correct");
@@ -146,7 +140,7 @@ public class Driver {
 					
 					break;
 				} catch (SQLException e) {
-					// TODO: handle exception
+					System.out.println("wrong username or password!");
 				}
 			}
 			PreparedStatement ps = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS gruppe135_treningsdatabase");
