@@ -1,6 +1,8 @@
 package no.ntnu.idi.TDT4145_gr135;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Excercise {
 	private int excerciseID;
@@ -55,5 +57,27 @@ public class Excercise {
 			System.out.println(e.getMessage());
 		}
 		return null;
+	}
+
+	public static Excercise[] retrieveExcercisesFromDB(Connection conn) {
+		try {
+			String query = "SELECT * FROM excercise";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+
+			List<Excercise> excercises = new ArrayList<>();
+			while(rs.next()) {
+				Excercise excercise = new Excercise(rs.getInt("ExcerciseID"), rs.getString("name"), rs.getString("type"));
+
+				excercises.add(excercise);
+			}
+
+			return excercises.toArray(new Excercise[excercises.size()]);
+		}
+		catch(SQLException e){
+			System.out.println("- ERROR -");
+			System.out.println(e.getMessage());
+			return null;
+		}
 	}
 }

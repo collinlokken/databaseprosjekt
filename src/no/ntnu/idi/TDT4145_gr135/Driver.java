@@ -21,15 +21,15 @@ public class Driver {
 			if (command.equals("post")) {
 				Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
 				excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
-			} else if (ls[0].equals("get")) {
-
+			} else if (command.equals("get")) {
+				Excercise[] excercises = Excercise.retrieveExcercisesFromDB(conn);
+				for (Excercise excercise:excercises) {
+					System.out.println(excercise);
+				}
 			} else {
 				throw new IllegalArgumentException("First word must me get or post");
 			}
 
-		}
-		else if (table.equals("workout")) {
-			workout(ls, conn);
 		}
 		else if (table.equals("equipment")) {
 			equipment(ls, conn);
