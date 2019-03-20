@@ -1,54 +1,142 @@
 package no.ntnu.idi.TDT4145_gr135;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Workout {
-	try {
+	
+	public int excerciseID;
+	public int date;
+	public int time;
+	public int length;
+	public String infoAboutExcercise;
+	public int performance;
+	public int personalShape;
+	
+	private Workout(int excerciseID, int date, int time, int length, String info, int performance, int personalShape) {
+		this.excerciseID = excerciseID;
+		this.date = date;
+		this.time = time;
+		this.length = length;
+		this.infoAboutExcercise = info;
+		this.performance = performance;
+		this.personalShape = personalShape;
 		
-		if (ls[0].equals("get")) {
-			String query = "SELECT * FROM " + ls[1];
+	}
+	
+	public ResultSet insertWorkoutIntoDB(int excerciseID, int date, int time, int length, String info, int performance, int personalShape, Connection conn) {
+		try {
+			String query = "INSERT INTO workout"+
+					""+
+					""+
+					""+
+					"";
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(query);
-			String result = "";
-			String header = "| " + ls[1] + " |\n";
-			while(rs.next()) {
-				result += header;
-				result += "| Workout";
-				result += rs.getInt("WorkoutID")+	 " | ";
-				result += rs.getInt("Date")+		 " | ";
-				result += rs.getInt("Time")+		 " | ";
-				result += rs.getInt("Length")+		 " | ";
-				result += rs.getString("InfoAboutExcercises")+ " | ";
-				result += rs.getInt("PersonalShape")+ "| ";
-				result += rs.getInt("Performance")+  " | ";
-			}
-			result += "\n";
-			return result;
-		}
-		else if (ls[0].equals("post")){
-			PreparedStatement stmt = conn.prepareStatement(
-					"INSERT INTO " + ls[1] + " VALUES(?, ?, ?, ?, ?, ?, ?)"
-			);
 			
-			stmt.setInt(1, Integer.parseInt(ls[2])); //id
-			stmt.setInt(2, Integer.parseInt(ls[3])); //date
-			stmt.setInt(3, Integer.parseInt(ls[4])); //time
-			stmt.setInt(4, Integer.parseInt(ls[5])); //length
-			stmt.setString(5, ls[6]);				 //Info
-			stmt.setInt(6, Integer.parseInt(ls[7])); //personal shape
-			stmt.setInt(7, Integer.parseInt(ls[8])); //performance
-			stmt.execute();
-			return "Values successfully inserted";
+		} catch (SQLException e) {
+			System.out.println("- ERROR -");
+			System.out.println(e.getMessage());
+			
 		}
-		
-	} catch (SQLException | ArrayIndexOutOfBoundsException e) {
-		String result  = "\n- ERROR -";
-		result += e.getMessage();
-		return result;
+		return null;		
 	}
-	return "\n";
-}
+	
+	public ResultSet retrieveWorkoutFromDB(Connection conn) {
+		try {	
+			String query = "SELECT * FROM workout";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			return rs;
+		}
+		catch(SQLException e){
+			System.out.println("- ERROR -");
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+
+	public int getExcerciseID() {
+		return excerciseID;
+	}
+
+	public void setExcerciseID(int excerciseID) {
+		this.excerciseID = excerciseID;
+	}
+
+	public int getDate() {
+		return date;
+	}
+
+	public void setDate(int date) {
+		this.date = date;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
+	}
+
+	public String getInfoAboutExcercise() {
+		return infoAboutExcercise;
+	}
+
+	public void setInfoAboutExcercise(String infoAboutExcercise) {
+		this.infoAboutExcercise = infoAboutExcercise;
+	}
+
+	public int getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(int performance) {
+		this.performance = performance;
+	}
+
+	public int getPersonalShape() {
+		return personalShape;
+	}
+
+	public void setPersonalShape(int personalShape) {
+		this.personalShape = personalShape;
+	}
+		
+		
+		
+		
+//		try {
+//	
+//			if (ls[0].equals("get")) {
+//				
+//				
+//			}
+//			else if (ls[0].equals("post")){
+//				PreparedStatement stmt = conn.prepareStatement(
+//						"INSERT INTO " + ls[1] + " VALUES(?, ?, ?)"
+//				);
+//				stmt.setInt(1, Integer.parseInt(ls[2]));
+//				stmt.setString(2, ls[3]);
+//				stmt.setString(3, ls[4]);
+//				stmt.execute();
+//				return "Values successfully inserted";
+//			}
+//		}
+//		catch (SQLException | ArrayIndexOutOfBoundsException e) {
+//			String result  = "\n- ERROR -";
+//			result += e.getMessage();
+//			return result;
+//		}
+//		return "\n";
+	
+	
 }
