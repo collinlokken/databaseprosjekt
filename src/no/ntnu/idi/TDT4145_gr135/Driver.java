@@ -6,80 +6,149 @@ import java.util.Scanner;
 /*
 @author Christopher Collin Loekken
 
-post-workouts-1-030419-0910-2-5-5
+post-workout-1-030419-0910-2-5-5
 */
 
 public class Driver {
 	
+	public static Boolean validate(String[] cmd) {
+		Boolean valid = false;
+		
+		if(		cmd[0].equals("get") &&
+				cmd.length==2) {
+			valid = true;
+		}
+		else if(cmd[0].equals("post") &&
+				(
+				cmd[1].equals("excercise") &&
+				cmd.length==5
+				||
+				cmd[1].equals("equipment") &&
+				cmd.length==5
+				||
+				cmd[1].equals("workout") &&
+				cmd.length==8
+				)){
+			valid = true;
+			
+		}
+		
+		return valid;
+	}
+	
+	public static String[] commandify(String cmd) {
+		
+		String[] command = cmd.split("-");
+		
+		return command;
+	}
+		
 	public static void command(String cmd, Connection conn) {
-		String[] ls = cmd.split("-");
 		
-		String command = ls[0];
-		String table = ls[1];
+		String[] ls = commandify(cmd);
+		Boolean validCommand = validate(ls);
 		
-		if (table.equals("excercise")) {
-			if (command.equals("post")) {
-				Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
-				excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
-			} else if (command.equals("get")) {
-				Excercise[] excercises = Excercise.retrieveExcercisesFromDB(conn);
-				for (Excercise excercise:excercises) {
-					System.out.println(excercise);
+		
+		if(validCommand) {
+			
+		
+		
+			String command = ls[0];
+			String table = ls[1];
+			
+			if (table.equals("excercise")) {
+				
+				if (command.equals("post")) {
+					Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
+					excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
+					
+				} else if (command.equals("get")) {
+					Excercise[] excercises = Excercise.retrieveExcercisesFromDB(conn);
+					for (Excercise excercise:excercises) {
+						System.out.println(excercise);
+					}
+				} else {
+					System.out.println("First word must be get or post");
 				}
-			} else {
-				throw new IllegalArgumentException("First word must me get or post");
+	
 			}
-
-		}
-		else if (table.equals("equipment")) {
-			equipment(ls, conn);
-
-			if (command.equals("get")) {
-				
-			}
-		}
-		else if (table.equals("workouts")) {
-			if (command.equals("get")) {
-				Workout[] workouts = Workout.retrieveWorkoutsFromDB(conn);
-				for (Workout workout:workouts) {
-					System.out.println(workout);
+			else if (table.equals("equipment")) {
+				if (command.equals("post")) {
+					int equipmentID = Integer.parseInt(ls[2]);
+					String name = ls[3];
+					String description = ls[4];
+					
+					Equipment equipment = Equipment.insertEquipmentIntoDB(equipmentID, name, description, conn);
+					System.out.println(equipment);
 				}
-				
+	
+				else if (command.equals("get")) {
+					Equipment[] equipments = Equipment.retrieveEquipmentsFromDB(conn);
+					for (Equipment equipment: equipments) {
+						System.out.println(equipment);
+					}
+				}
+				else {
+					System.out.println("First word must be get or post");
+				}
 			}
-			else if (command.equals("post")) {
-				int workoutID = Integer.parseInt(ls[2]);
-				int date = Integer.parseInt(ls[3]);
-				int time = Integer.parseInt(ls[4]);
-				int length = Integer.parseInt(ls[5]);
-				int performance = Integer.parseInt(ls[6]);
-				int personalShape = Integer.parseInt(ls[7]);
-				Workout workout = Workout.insertWorkoutIntoDB(workoutID, date, time, length, performance, personalShape, conn);
-				System.out.println("Created : "+workout);
+			else if (table.equals("workout")) {
+				
+				if (command.equals("post")) {
+					int workoutID = Integer.parseInt(ls[2]);
+					int date = Integer.parseInt(ls[3]);
+					int time = Integer.parseInt(ls[4]);
+					int length = Integer.parseInt(ls[5]);
+					int performance = Integer.parseInt(ls[6]);
+					int personalShape = Integer.parseInt(ls[7]);
+					Workout workout = Workout.insertWorkoutIntoDB(workoutID, date, time, length, performance, personalShape, conn);
+					System.out.println("Created : "+workout);
+				}
+				else if (command.equals("get")) {
+					Workout[] workouts = Workout.retrieveWorkoutsFromDB(conn);
+					for (Workout workout:workouts) {
+						System.out.println(workout);
+					}
+				}
+				else {
+					System.out.println("First word must be get or post");
+				}
+			}
+			else {
+				System.out.println("Table name is not correct");
 			}
 		}
-		else if (table.equals("equipment")) {
-			if (command.equals("get")) {
-				
-			}
+		else {
+			System.out.println("Thats not a valid command!");
 		}
-		
 	}
 	
 	public static void main(String[] args) {
 		
 		try {
-			Scanner input = new Scanner(System.in);
-			System.out.println("enter database username");
-			String usr = input.next();
-			
-			System.out.println("enter database password");
-			String psw = input.next();
-			
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-			
+			Connection conn = null;
 			String url = "jdbc:mysql://127.0.0.1:3306/";
-			Connection conn = DriverManager.getConnection(url+"?user="+usr+"&password="+psw+"&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
-			
+			String usr = "";
+			String psw = "";
+			Scanner input = new Scanner(System.in);
+			while(true) {
+				try {
+					
+					System.out.println("enter database username");
+					usr = input.next();
+					
+					System.out.println("enter database password");
+					psw = input.next();
+					
+					Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+										
+					conn = DriverManager.getConnection(url+"?user="+usr+"&password="+psw+"&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+					
+					break;
+				} catch (SQLException e) {
+					// TODO: handle exception
+				}
+			}
 			PreparedStatement ps = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS gruppe135_treningsdatabase");
 			int result = ps.executeUpdate();
 			if (result==1){
@@ -189,13 +258,24 @@ public class Driver {
 			
 			
 			System.out.println("Tables succsessfully created.");
+			System.out.println("\n(input 'help' for help)\n");
 			
 			while (true) {
 				
-				System.out.println("enter command");
+				System.out.println("\nenter command \n");
 				String cmd = input.next();
-				command(cmd, conn1);
-				
+				if (cmd.equals("help")) {
+					String s = "TO INSERT:\n\t";
+					s += "post-<tablename>-<value 1>-<value 2>-<value n>\n\n";
+					s += "TO RETRIEVE:\n\t";
+					s += "get-<tablename>\n\n";
+					s += "TABLES:\n\t";
+					s += "excercise(ID, Name, Type)\n\t workout(ID, Date, Time, Lenght, Performance, PersonalPerformance)\n\t equipment(ID, Name, Description)";
+					System.out.println(s);
+				}
+				else {
+					command(cmd, conn1);
+				}
 				
 			}
 			

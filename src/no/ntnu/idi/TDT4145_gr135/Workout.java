@@ -6,16 +6,14 @@ import java.util.List;
 
 public class Workout {
 	
-	public Integer workoutID;
-	public Integer date;
-	public Integer time;
-	public Integer length;
-	public Integer performance;
-	public Integer personalShape;
+	public int workoutID;
+	public int date;
+	public int time;
+	public int length;
+	public int performance;
+	public int personalShape;
 	
-	private Workout() {
-		
-	}
+	
 	
 	public String toString() {
 		String date = ""+this.getDate();
@@ -26,6 +24,9 @@ public class Workout {
 		String hour = time.substring(0,1);
 		String minuite = time.substring(1,3);
 		return "ID:"+ this.getWorkoutID() + "\t(" + day+"/"+month+"/"+year+"/" +"\t| "+hour+":"+minuite +"\t| "+ this.getLength() +"\t| "+ this.getPerformance() +"\t| "+this.getPersonalShape()+")";
+	}
+	private Workout() {
+		
 	}
 	
 	private Workout(int workoutID, int date, int time, int length, int performance, int personalShape) {
@@ -53,8 +54,8 @@ public class Workout {
 			statement.setInt(6, personalShape);
 			statement.execute();
 			
-			Workout result = new Workout(workoutID,date,time,length,performance,personalShape);
-			return result;
+			Workout workout = new Workout(workoutID,date,time,length,performance,personalShape);
+			return workout;
 			
 		} catch (SQLException e) {
 			System.out.println("- ERROR -");
