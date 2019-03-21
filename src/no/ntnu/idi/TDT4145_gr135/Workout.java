@@ -18,12 +18,23 @@ public class Workout {
 	public String toString() {
 		String date = ""+this.getDate();
 		String time = ""+this.getTime();
-		String day = date.substring(0,1);
-		String month = date.substring(1,3);
-		String year = date.substring(3,5);
+		
+		System.out.println(date);
+		System.out.println(date.substring(date.length()-2, date.length()));
+		
+		String year = date.substring(date.length()-2, date.length());
+		date = date.substring(date.length()-2);
+		
+		System.out.println(date);
+		System.out.println(date.substring(date.length()-2, date.length()));
+		
+		String month = date.substring(date.length()-2, date.length());
+		date = date.substring(date.length()-2,date.length());
+		String day = date;
+		
 		String hour = time.substring(0,1);
 		String minuite = time.substring(1,3);
-		return "ID:"+ this.getWorkoutID() + "\t(" + day+"/"+month+"/"+year+"/" +"\t| "+hour+":"+minuite +"\t| "+ this.getLength() +"\t| "+ this.getPerformance() +"\t| "+this.getPersonalShape()+")";
+		return "ID:"+ this.getWorkoutID() + "\t(" + day+"/"+month+"/"+year +"\t| "+hour+":"+minuite +"\t| "+ this.getLength() +"\t| "+ this.getPerformance() +"\t| "+this.getPersonalShape()+")";
 	}
 	private Workout() {
 		

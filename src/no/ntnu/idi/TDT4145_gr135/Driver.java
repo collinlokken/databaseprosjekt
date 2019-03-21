@@ -92,7 +92,17 @@ public class Driver {
 				
 				if (command.equals("post")) {
 					int workoutID = Integer.parseInt(ls[2]);
-					int date = Integer.parseInt(ls[3]);
+					
+					String[] dates = ls[3].split("/");
+					int date;
+					if(dates.length==3) {
+						date = 10000*Integer.parseInt(dates[0]) + 100*Integer.parseInt(dates[1]) + Integer.parseInt(dates[2]) ;
+					}
+					else {
+						System.out.println("Wrong date format! Should be dd/mm/yy");
+						return;
+					}
+					// 030419
 					int time = Integer.parseInt(ls[4]);
 					int length = Integer.parseInt(ls[5]);
 					int performance = Integer.parseInt(ls[6]);
