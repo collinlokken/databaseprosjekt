@@ -94,7 +94,9 @@ public class Driver {
 					int workoutID = Integer.parseInt(ls[2]);
 					
 					String[] dates = ls[3].split("/");
+					String[] times = ls[4].split(":");
 					int date;
+					int time;
 					if(dates.length==3) {
 						date = 10000*Integer.parseInt(dates[0]) + 100*Integer.parseInt(dates[1]) + Integer.parseInt(dates[2]) ;
 					}
@@ -102,8 +104,14 @@ public class Driver {
 						System.out.println("Wrong date format! Should be dd/mm/yy");
 						return;
 					}
+					if(times.length==2) {
+						time = 100*Integer.parseInt(times[0]) + Integer.parseInt(times[1]);
+					}
+					else {
+						System.out.println("Wrong time format! Should be hh:mm");
+						return;
+					}
 					// 030419
-					int time = Integer.parseInt(ls[4]);
 					int length = Integer.parseInt(ls[5]);
 					int performance = Integer.parseInt(ls[6]);
 					int personalShape = Integer.parseInt(ls[7]);

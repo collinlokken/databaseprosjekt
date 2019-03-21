@@ -13,31 +13,57 @@ public class Workout {
 	public int performance;
 	public int personalShape;
 	
-	
-	
-	public String toString() {
-		String date = ""+this.getDate();
-		String time = ""+this.getTime();
+	public ArrayList<String> dateify(String date) {
 		
-		System.out.println(date);
-		System.out.println(date.substring(date.length()-2, date.length()));
-		
+		ArrayList<String> dates = new ArrayList<>();
+		//Year
 		String year = date.substring(date.length()-2, date.length());
-		date = date.substring(date.length()-2);
 		
-		System.out.println(date);
-		System.out.println(date.substring(date.length()-2, date.length()));
-		
+		//Month
+		date = date.substring(0,date.length()-2);
 		String month = date.substring(date.length()-2, date.length());
-		date = date.substring(date.length()-2,date.length());
-		String day = date;
 		
-		String hour = time.substring(0,1);
-		String minuite = time.substring(1,3);
-		return "ID:"+ this.getWorkoutID() + "\t(" + day+"/"+month+"/"+year +"\t| "+hour+":"+minuite +"\t| "+ this.getLength() +"\t| "+ this.getPerformance() +"\t| "+this.getPersonalShape()+")";
+		//Day
+		String day = date.substring(0,date.length()-2);
+		
+		dates.add(day);
+		dates.add(month);
+		dates.add(year);
+		
+		return dates;
+
 	}
+	
+	private ArrayList<String> timeify(String time) {
+		ArrayList<String> times = new ArrayList<>();
+		
+		String minuite = time.substring(time.length()-2, time.length());
+		String hour = time.substring(0,time.length()-2);
+				
+		times.add(hour);
+		times.add(minuite);
+		
+		return times;
+	}
+
 	private Workout() {
 		
+	}
+	
+	public String toString() {
+		ArrayList<String> date = dateify(""+this.getDate());
+		ArrayList<String> time = timeify(""+this.getTime());
+		
+		return "ID:"+ this.getWorkoutID() +
+				"\t(" +
+				date.get(0)+"/"+
+				date.get(1)+"/"+
+				date.get(2) +				"\t| "+
+				time.get(0)+":"+time.get(1)+"\t| "+
+				this.getLength() +			"\t| "+
+				this.getPerformance() +		"\t| "+
+				this.getPersonalShape()+
+				")";
 	}
 	
 	private Workout(int workoutID, int date, int time, int length, int performance, int personalShape) {
