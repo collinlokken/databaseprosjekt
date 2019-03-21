@@ -13,8 +13,8 @@ public class Workout {
 	public int performance;
 	public int personalShape;
 	
-	public ArrayList<String> dateify(String date) {
-		
+	public ArrayList<String> dateify(int d) { // ddmmyy --> [dd, mm, yy]
+		String date = ""+d;
 		ArrayList<String> dates = new ArrayList<>();
 		//Year
 		String year = date.substring(date.length()-2, date.length());
@@ -34,7 +34,8 @@ public class Workout {
 
 	}
 	
-	private ArrayList<String> timeify(String time) {
+	private ArrayList<String> timeify(int t) { // hhmm --> [hh, mm]
+		String time = ""+t;
 		ArrayList<String> times = new ArrayList<>();
 		
 		String minuite = time.substring(time.length()-2, time.length());
@@ -51,8 +52,8 @@ public class Workout {
 	}
 	
 	public String toString() {
-		ArrayList<String> date = dateify(""+this.getDate());
-		ArrayList<String> time = timeify(""+this.getTime());
+		ArrayList<String> date = dateify(this.getDate());
+		ArrayList<String> time = timeify(this.getTime());
 		
 		return "ID:"+ this.getWorkoutID() +
 				"\t(" +

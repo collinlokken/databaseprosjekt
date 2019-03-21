@@ -192,14 +192,6 @@ public class Driver {
 					"`Name` varchar(20) not null\r\n" + 
 					")";
 			
-			final String sql3 = "CREATE TABLE IF NOT EXISTS `contains_excercisegruoup`( /* junction table */\r\n" + 
-					"`WorkoutID` int(11) not null,\r\n" + 
-					"`ExcerciseGroupID` int(11) not null,\r\n" + 
-					"primary key (`WorkoutID`,`ExcerciseGroupID`),\r\n" + 
-					"constraint foreign key(`WorkoutID`) references `workout`(`WorkoutID`)on delete cascade on update cascade,\r\n" + 
-					"constraint foreign key(`ExcerciseGroupID`) references `excercisegroup`(`ExcerciseGroupID`) on delete cascade on update cascade\r\n" + 
-					")";
-			
 			final String sql4 = "CREATE TABLE IF NOT EXISTS `contains_excercise`( /* junction table */\r\n" + 
 					"`ExcerciseID` int(11) not null,\r\n" + 
 					"`ExcerciseGroupID` int(11) not null,\r\n" + 
@@ -259,7 +251,6 @@ public class Driver {
 			stmt.execute(sql0);
 			stmt.execute(sql1);
 			stmt.execute(sql2);
-			stmt.execute(sql3);
 			stmt.execute(sql4);
 			stmt.execute(sql5);
 			stmt.execute(sql6);
