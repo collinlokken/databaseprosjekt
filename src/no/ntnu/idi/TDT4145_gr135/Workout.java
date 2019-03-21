@@ -3,11 +3,12 @@ package no.ntnu.idi.TDT4145_gr135;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Workout {
 	
 	public int workoutID;
-	public int date; // 21/03/19 --> 210319. workout.dateify(this.date) = 
+	public int date;
 	public int time;
 	public int length;
 	public int performance;
@@ -77,7 +78,7 @@ public class Workout {
 		
 	}
 	
-	public static Workout insertWorkoutIntoDB(int date, int time, int length, int performance, int personalShape, Connection conn) {
+	public static Workout insertWorkoutIntoDB(int date, int time, int length, int performance, int personalShape, Connection conn, Scanner input) {
 		try {
 			int workoutID = 0;
 			Workout[] workouts = retrieveWorkoutsFromDB(conn);
@@ -98,6 +99,32 @@ public class Workout {
 			statement.setInt(5, performance);
 			statement.setInt(6, personalShape);
 			statement.execute();
+			
+			while(true) {
+				System.out.println("Please enter excercise id to this workout\nenter 'quit' when you're done\nexcercises are:\n");
+				Excercise[] excercises = Excercise.retrieveExcercisesFromDB(conn);
+				for (Excercise excercise:excercises) {
+					System.out.println("ID:"+excercise.getExcerciseID()+"  Name:"+excercise.getName());
+				}
+				System.out.println("\n");
+				
+				String excercise = input.next();
+				
+				if(excercise.equals("quit")) {
+					break;
+				}
+				
+				String ce = "INSERT INTO contains_excercises values(?, ?)";
+				
+				PreparedStatement stmt = conn.prepareStatement(ce);
+				stmt.setInt(1, workoutID);
+				stmt.setInt(2, Integer.parseInt(excercise));
+				stmt.execute();
+				System.out.println("nice :)\n");
+				
+			}
+			
+			
 			
 			Workout workout = new Workout(workoutID+1,date,time,length,performance,personalShape);
 			return workout;
@@ -163,9 +190,7 @@ public class Workout {
 			System.out.println("- ERROR -");
 			System.out.println(e.getMessage());
 			return null;
-		}
-		
-		
+		}		
 	}
 	
 

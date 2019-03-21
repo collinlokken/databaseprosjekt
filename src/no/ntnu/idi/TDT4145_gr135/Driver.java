@@ -15,7 +15,7 @@ public class Driver {
 		Boolean valid = false;
 		
 		if(		cmd[0].equals("get") &&
-				cmd.length==2) {
+				(cmd.length==2||cmd[2].equals("time")&&cmd.length==3)) {
 			valid = true;
 		}
 		else if(cmd[0].equals("post") &&
@@ -43,7 +43,7 @@ public class Driver {
 		return command;
 	}
 		
-	public static void command(String cmd, Connection conn) {
+	public static void command(String cmd, Connection conn, Scanner input) {
 		
 		String[] ls = commandify(cmd);
 		Boolean validCommand = validate(ls);
@@ -59,13 +59,22 @@ public class Driver {
 			if (table.equals("excercise")) {
 				
 				if (command.equals("post")) {
-					Excercise excercise = new Excercise(Integer.parseInt(ls[2]), ls[3], ls[4]);
-					excercise.insertExcerciseIntoDB(conn, excercise.getExcerciseID(), excercise.getName(), excercise.getType());
+					Excercise.insertExcerciseIntoDB(conn, Integer.parseInt(ls[2]), ls[3], ls[4]);
 					
 				} else if (command.equals("get")) {
-					Excercise[] excercises = Excercise.retrieveExcercisesFromDB(conn);
-					for (Excercise excercise:excercises) {
-						System.out.println(excercise);
+					if(ls.length==3) {
+						if(ls[2].equals("time")) {
+							Excercise[] excercises = Excercise.retrieveExcercisesFromDate(conn, input);
+							for (Excercise excercise:excercises) {
+								System.out.println(excercise);
+							}
+						}
+					}
+					else {
+						Excercise[] excercises = Excercise.retrieveExcercisesFromDB(conn);
+						for (Excercise excercise:excercises) {
+							System.out.println(excercise);
+						}
 					}
 				}
 	
@@ -114,7 +123,7 @@ public class Driver {
 					int length = Integer.parseInt(ls[4]);
 					int performance = Integer.parseInt(ls[5]);
 					int personalShape = Integer.parseInt(ls[6]);
-					Workout workout = Workout.insertWorkoutIntoDB(date, time, length, performance, personalShape, conn);
+					Workout workout = Workout.insertWorkoutIntoDB(date, time, length, performance, personalShape, conn, input);
 					System.out.println("Created : "+workout);
 				}
 				else if (command.equals("get")) {
@@ -275,7 +284,7 @@ public class Driver {
 					System.out.println(s);
 				}
 				else {
-					command(cmd, conn1);
+					command(cmd, conn1, input);
 				}
 				
 			}
