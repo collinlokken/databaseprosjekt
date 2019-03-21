@@ -7,7 +7,7 @@ import java.util.List;
 public class Workout {
 	
 	public int workoutID;
-	public int date;
+	public int date; // 21/03/19 --> 210319. workout.dateify(this.date) = 
 	public int time;
 	public int length;
 	public int performance;
@@ -77,14 +77,21 @@ public class Workout {
 		
 	}
 	
-	public static Workout insertWorkoutIntoDB(int workoutID, int date, int time, int length, int performance, int personalShape, Connection conn) {
+	public static Workout insertWorkoutIntoDB(int date, int time, int length, int performance, int personalShape, Connection conn) {
 		try {
+			int workoutID = 0;
+			Workout[] workouts = retrieveWorkoutsFromDB(conn);
+			for (Workout workout: workouts) {
+				if(workout.getWorkoutID()>workoutID) {
+					workoutID = workout.getWorkoutID();
+				}
+			}
 			
 			String query = "INSERT INTO workout VALUES(?, ?, ?, ?, ?, ?);";
 		
 			PreparedStatement statement = conn.prepareStatement(query);
 			
-			statement.setInt(1, workoutID);
+			statement.setInt(1, workoutID+1);
 			statement.setInt(2, date);
 			statement.setInt(3, time);
 			statement.setInt(4, length);
@@ -92,7 +99,7 @@ public class Workout {
 			statement.setInt(6, personalShape);
 			statement.execute();
 			
-			Workout workout = new Workout(workoutID,date,time,length,performance,personalShape);
+			Workout workout = new Workout(workoutID+1,date,time,length,performance,personalShape);
 			return workout;
 			
 		} catch (SQLException e) {
@@ -130,6 +137,37 @@ public class Workout {
 			return null;
 		}
 	}
+	
+	public static Workout[] retrieveRecentWorkoutsFromDB(Connection conn, int latest_n) {
+		try {
+			String query = "SELECT TOP "+latest_n+"* FROM workout ORDER BY DATE ASC";
+			Statement statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			
+			List<Workout> workouts = new ArrayList<>();
+			while(rs.next()) {
+				Workout workout = new Workout();
+				workout.setWorkoutID(rs.getInt("workoutID"));
+				workout.setDate(rs.getInt("date"));
+				workout.setTime(rs.getInt("time"));
+				workout.setLength(rs.getInt("length"));
+				workout.setPerformance(rs.getInt("performance"));
+				workout.setPersonalShape(rs.getInt("personalShape"));
+				
+				workouts.add(workout);
+			}
+			
+			return workouts.toArray(new Workout[workouts.size()]);
+			
+		} catch (Exception e) {
+			System.out.println("- ERROR -");
+			System.out.println(e.getMessage());
+			return null;
+		}
+		
+		
+	}
+	
 
 	public int getWorkoutID() {
 		return workoutID;

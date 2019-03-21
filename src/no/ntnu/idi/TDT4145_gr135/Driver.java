@@ -6,7 +6,7 @@ import java.util.Scanner;
 /*
 @author Christopher Collin Loekken
 
-post-workout-1-030419-0910-2-5-5
+post-workout-030419-0910-2-5-5
 */
 
 public class Driver {
@@ -27,7 +27,7 @@ public class Driver {
 				cmd.length==5
 				||
 				cmd[1].equals("workout") &&
-				cmd.length==8
+				cmd.length==7
 				)){
 			valid = true;
 			
@@ -91,17 +91,16 @@ public class Driver {
 			else if (table.equals("workout")) {
 				
 				if (command.equals("post")) {
-					int workoutID = Integer.parseInt(ls[2]);
 					
-					String[] dates = ls[3].split("/");
-					String[] times = ls[4].split(":");
+					String[] dates = ls[2].split("/");
+					String[] times = ls[3].split(":");
 					int date;
 					int time;
 					if(dates.length==3) {
 						date = 10000*Integer.parseInt(dates[0]) + 100*Integer.parseInt(dates[1]) + Integer.parseInt(dates[2]) ;
 					}
 					else {
-						System.out.println("Wrong date format! Should be dd/mm/yy");
+						System.out.println("Wrong date format! Should be yy/mm/dd");
 						return;
 					}
 					if(times.length==2) {
@@ -112,10 +111,10 @@ public class Driver {
 						return;
 					}
 					// 030419
-					int length = Integer.parseInt(ls[5]);
-					int performance = Integer.parseInt(ls[6]);
-					int personalShape = Integer.parseInt(ls[7]);
-					Workout workout = Workout.insertWorkoutIntoDB(workoutID, date, time, length, performance, personalShape, conn);
+					int length = Integer.parseInt(ls[4]);
+					int performance = Integer.parseInt(ls[5]);
+					int personalShape = Integer.parseInt(ls[6]);
+					Workout workout = Workout.insertWorkoutIntoDB(date, time, length, performance, personalShape, conn);
 					System.out.println("Created : "+workout);
 				}
 				else if (command.equals("get")) {
@@ -124,7 +123,6 @@ public class Driver {
 						System.out.println(workout);
 					}
 				}
-				
 			}
 			else {
 				System.out.println("Table name is not correct");
@@ -273,7 +271,7 @@ public class Driver {
 					s += "TO RETRIEVE:\n\t";
 					s += "get-<tablename>\n\n";
 					s += "TABLES:\n\t";
-					s += "excercise(ID, Name, Type)\n\t workout(ID, Date, Time, Lenght, Performance, PersonalPerformance)\n\t equipment(ID, Name, Description)";
+					s += "excercise(ID, Name, Type)\n\t workout(Date=yy/mm/dd , Time=hh:mm, Lenght, Performance, PersonalPerformance)\n\t equipment(ID, Name, Description)";
 					System.out.println(s);
 				}
 				else {
