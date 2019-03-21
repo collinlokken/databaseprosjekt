@@ -3,6 +3,7 @@ package no.ntnu.idi.TDT4145_gr135;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Equipment {
 	
@@ -25,18 +26,31 @@ public class Equipment {
 		this.description = description;
 	}
 	
-	public static Equipment insertEquipmentIntoDB(int equipmentId, String name, String description, Connection conn) {
+	public static Equipment insertEquipmentIntoDB(Connection conn, Scanner input) {
 		try {
+			Equipment[] equipments = Equipment.retrieveEquipmentsFromDB(conn);
+			int equipmentId = 0;
+			for(Equipment equipment: equipments) {
+				if (equipment.getEquipmentID()>equipmentId) {
+					equipmentId = equipment.getEquipmentID();
+				}
+			}
+			
 			String query = "INSERT INTO equipment VALUES(?, ?, ?);";
 			PreparedStatement statement = conn.prepareStatement(query);
 			
-			statement.setInt(1, equipmentId);
+			System.out.println("Equipment name...");
+			String name = input.next();
+			System.out.println("Equipment description...");
+			String description = input.next();
+			
+			statement.setInt(1, equipmentId+1);
 			statement.setString(2, name);
 			statement.setString(3, description);
 			
 			statement.execute();
 			
-			Equipment equipment = new Equipment(equipmentId, name, description);
+			Equipment equipment = new Equipment(equipmentId+1, name, description);
 			
 			return equipment;
 			

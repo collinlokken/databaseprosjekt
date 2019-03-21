@@ -49,20 +49,92 @@ public class Excercise {
 		this.type = type;
 	}
 
-	public static ResultSet insertExcerciseIntoDB(Connection conn, int excerciseID, String name, String type) {
+	public static Excercise insertExcerciseIntoDB(Connection conn, Scanner input) {
 		try {
 			String query = "INSERT INTO excercise VALUES(?, ?, ?)";
-
+			
+			System.out.println("Exercice name...");
+			String name = input.next();
+			
+			System.out.println("Exercise type... (either fixed_equipment_excercise or bodyweight_excercise)");
+			String type = input.next();
+			
+			if (!(type.equals("fixed_equipment_excercise") || type.equals("bodyweight_excercise"))) {
+				
+				while(true) {
+					System.out.println("Hey! I told you either fixed_equipment_excercise or bodyweight_excercise!");
+					type = input.next();
+					if (type.equals("fixed_equipment_excercise") || type.equals("bodyweight_excercise")) {
+						break;
+					}
+				}
+			}
+				
+			Excercise[] excercises = Excercise.retrieveExcercisesFromDB(conn);
+			int excerciseid = 0;
+			for(Excercise excercise:excercises) {
+				if(excercise.getExcerciseID()>excerciseid) {
+					excerciseid = excercise.getExcerciseID();
+				}
+			}
+			
 			PreparedStatement preparedStatement = conn.prepareStatement(query);
 
-			preparedStatement.setInt(1, excerciseID);
+			preparedStatement.setInt(1, excerciseid+1);
 			preparedStatement.setString(2, name);
 			preparedStatement.setString(3, type);
 			preparedStatement.execute();
-
-			//Statement statement = conn.createStatement();
-			//ResultSet rs = statement.executeQuery(query);
-			return null;
+			
+			if (type.equals("fixed_equipment_excercise")) {
+				System.out.println("weight:");
+				int weight = input.nextInt();
+				System.out.println("sets:");
+				int sets = input.nextInt();
+				
+				String fee = "INSERT INTO fixed_equipment_excercise VALUES(?,?,?,?)";
+				
+								
+				
+				PreparedStatement feestmt = conn.prepareStatement(fee);
+				feestmt.setInt(1, excerciseid+1);
+				feestmt.setInt(2, excerciseid+1);
+				feestmt.setInt(3, weight);
+				feestmt.setInt(4, sets);
+				
+				feestmt.execute();
+				
+				System.out.println("please specify equipment id for fixed_equipment_excercise\nequipments are:\n");
+				Equipment[] equipments = Equipment.retrieveEquipmentsFromDB(conn);
+				for (Equipment equipment:equipments) {
+					System.out.println("ID:"+equipment.getEquipmentID()+"  Name:"+equipment.getName());
+				}
+				String equipment = input.next();
+				
+				String ue = "INSERT INTO contains_excercise values(?, ?)";
+				
+				PreparedStatement stmt = conn.prepareStatement(ue);
+				stmt.setInt(1, excerciseid+1);
+				stmt.setInt(1, Integer.parseInt(equipment));
+			}
+			else if (type.equals("bodyweight_excercise")) {
+				System.out.println("bodyweight_excercise description...");
+				String description = input.next();
+				
+				
+				String fee = "INSERT INTO bodyweight_excercise VALUES(?,?,?)";
+				
+								
+				
+				PreparedStatement feestmt = conn.prepareStatement(fee);
+				feestmt.setInt(1, excerciseid+1);
+				feestmt.setInt(2, excerciseid+1);
+				feestmt.setString(3, description);
+				
+				feestmt.execute();
+			}
+			Excercise excercise = new Excercise(excerciseid+1, name, type);
+			return excercise;
+			
 		} catch (SQLException | ArrayIndexOutOfBoundsException e) {
 			System.out.println("- ERROR -");
 			System.out.println(e.getMessage());

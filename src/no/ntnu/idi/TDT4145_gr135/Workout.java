@@ -78,7 +78,7 @@ public class Workout {
 		
 	}
 	
-	public static Workout insertWorkoutIntoDB(int date, int time, int length, int performance, int personalShape, Connection conn, Scanner input) {
+	public static Workout insertWorkoutIntoDB(Connection conn, Scanner input) {
 		try {
 			int workoutID = 0;
 			Workout[] workouts = retrieveWorkoutsFromDB(conn);
@@ -87,6 +87,31 @@ public class Workout {
 					workoutID = workout.getWorkoutID();
 				}
 			}
+			String[] dates;
+			String[] times;
+			while(true) {
+				System.out.println("Date: (yy/mm/dd)");
+				String d = input.next();
+				System.out.println("Time: (hh:mm)");
+				String t = input.next();
+				dates = d.split("/");
+				times = t.split(":");
+				if(dates.length==3&&times.length==2) {
+					break;
+				}
+				System.out.println("\nwrong date or time format... try again\n");
+			}
+			int date = 10000*Integer.parseInt(dates[0]) + 100*Integer.parseInt(dates[1]) + Integer.parseInt(dates[2]);
+			int time = 100*Integer.parseInt(times[0]) + Integer.parseInt(times[1]);
+			
+			System.out.println("length: (1-10)");
+			int length = input.nextInt();
+			
+			System.out.println("perfonrmance: (1-10)");
+			int performance= input.nextInt();
+			
+			System.out.println("personalShape: (1-10)");
+			int personalShape= input.nextInt();
 			
 			String query = "INSERT INTO workout VALUES(?, ?, ?, ?, ?, ?);";
 		
@@ -117,7 +142,7 @@ public class Workout {
 				String ce = "INSERT INTO contains_excercises values(?, ?)";
 				
 				PreparedStatement stmt = conn.prepareStatement(ce);
-				stmt.setInt(1, workoutID);
+				stmt.setInt(1, workoutID+1);
 				stmt.setInt(2, Integer.parseInt(excercise));
 				stmt.execute();
 				System.out.println("nice :)\n");
@@ -165,9 +190,13 @@ public class Workout {
 		}
 	}
 	
-	public static Workout[] retrieveRecentWorkoutsFromDB(Connection conn, int latest_n) {
+	public static Workout[] retrieveRecentWorkoutsFromDB(Connection conn, Scanner input) {
 		try {
-			String query = "SELECT TOP "+latest_n+"* FROM workout ORDER BY DATE ASC";
+			
+			System.out.println("Enter a number of workouts to retrieve");
+			int latest_n = input.nextInt();
+			
+			String query = "SELECT * FROM workout ORDER BY DATE ASC LIMIT "+latest_n+";";
 			Statement statement = conn.createStatement();
 			ResultSet rs = statement.executeQuery(query);
 			

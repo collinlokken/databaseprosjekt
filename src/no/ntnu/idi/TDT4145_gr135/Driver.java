@@ -18,16 +18,15 @@ public class Driver {
 				(cmd.length==2||cmd[2].equals("time")&&cmd.length==3)) {
 			valid = true;
 		}
-		else if(cmd[0].equals("post") &&
+		else if(cmd[0].equals("post") && cmd.length==2 &&
 				(
-				cmd[1].equals("excercise") &&
-				cmd.length==5
+				cmd[1].equals("exercise")
 				||
-				cmd[1].equals("equipment") &&
-				cmd.length==5
+				cmd[1].equals("equipment")
 				||
-				cmd[1].equals("workout") &&
-				cmd.length==7
+				cmd[1].equals("workout")
+				||
+				cmd[1].equals("exercisegroup")
 				)){
 			valid = true;
 			
@@ -55,11 +54,39 @@ public class Driver {
 		
 			String command = ls[0];
 			String table = ls[1];
+			if (table.equals("exercisegroup")) {
+				
+				if (command.equals("get")) {
+					if (ls.length==3) {
+						Excercise[] excercises = ExerciseGroup.findExercises(conn, input);
+						for(Excercise excercise: excercises) {
+							System.out.println(excercise);
+							
+						}
+						return;
+					}
+					else{
+						ExerciseGroup[] exerciseGroups = ExerciseGroup.retrieveExerciseGroupsFromDB(conn);
+						for (ExerciseGroup exerciseGroup : exerciseGroups) {
+							System.out.println(exerciseGroup);
+							
+						}
+						return;
+					}
+				}
+				else if(command.equals("post")) {
+					ExerciseGroup exercisegroup = ExerciseGroup.insertExerciseGroupIntoDB(conn, input);
+					System.out.println("Created:" + exercisegroup);
+					return;
+				}
+			}
 			
-			if (table.equals("excercise")) {
+			if (table.equals("exercise")) {
 				
 				if (command.equals("post")) {
-					Excercise.insertExcerciseIntoDB(conn, Integer.parseInt(ls[2]), ls[3], ls[4]);
+					Excercise excercise = Excercise.insertExcerciseIntoDB(conn, input);
+					System.out.println("Created:" + excercise);
+					return;
 					
 				} else if (command.equals("get")) {
 					if(ls.length==3) {
@@ -67,7 +94,9 @@ public class Driver {
 							Excercise[] excercises = Excercise.retrieveExcercisesFromDate(conn, input);
 							for (Excercise excercise:excercises) {
 								System.out.println(excercise);
+								
 							}
+							return;
 						}
 					}
 					else {
@@ -75,18 +104,17 @@ public class Driver {
 						for (Excercise excercise:excercises) {
 							System.out.println(excercise);
 						}
+						return;
 					}
 				}
 	
 			}
 			else if (table.equals("equipment")) {
 				if (command.equals("post")) {
-					int equipmentID = Integer.parseInt(ls[2]);
-					String name = ls[3];
-					String description = ls[4];
 					
-					Equipment equipment = Equipment.insertEquipmentIntoDB(equipmentID, name, description, conn);
+					Equipment equipment = Equipment.insertEquipmentIntoDB(conn, input);
 					System.out.println(equipment);
+					return;
 				}
 	
 				else if (command.equals("get")) {
@@ -94,43 +122,25 @@ public class Driver {
 					for (Equipment equipment: equipments) {
 						System.out.println(equipment);
 					}
+					return;
 				}
 				
 			}
 			else if (table.equals("workout")) {
 				
 				if (command.equals("post")) {
-					
-					String[] dates = ls[2].split("/");
-					String[] times = ls[3].split(":");
-					int date;
-					int time;
-					if(dates.length==3) {
-						date = 10000*Integer.parseInt(dates[0]) + 100*Integer.parseInt(dates[1]) + Integer.parseInt(dates[2]) ;
-					}
-					else {
-						System.out.println("Wrong date format! Should be yy/mm/dd");
-						return;
-					}
-					if(times.length==2) {
-						time = 100*Integer.parseInt(times[0]) + Integer.parseInt(times[1]);
-					}
-					else {
-						System.out.println("Wrong time format! Should be hh:mm");
-						return;
-					}
-					// 030419
-					int length = Integer.parseInt(ls[4]);
-					int performance = Integer.parseInt(ls[5]);
-					int personalShape = Integer.parseInt(ls[6]);
-					Workout workout = Workout.insertWorkoutIntoDB(date, time, length, performance, personalShape, conn, input);
+										
+					Workout workout = Workout.insertWorkoutIntoDB(conn, input);
 					System.out.println("Created : "+workout);
+					return;
 				}
 				else if (command.equals("get")) {
-					Workout[] workouts = Workout.retrieveWorkoutsFromDB(conn);
+					Workout[] workouts = Workout.retrieveRecentWorkoutsFromDB(conn, input);
 					for (Workout workout:workouts) {
 						System.out.println(workout);
 					}
+					return;
+					
 				}
 			}
 			else {
@@ -165,7 +175,7 @@ public class Driver {
 					
 					break;
 				} catch (SQLException e) {
-					System.out.println("wrong username or password!");
+					System.out.println("\nConnection failed...\nCheck if username and password are correct\nYou must also be running a local instance of a MYSQL 80 database\n");
 				}
 			}
 			PreparedStatement ps = conn.prepareStatement("CREATE DATABASE IF NOT EXISTS gruppe135_treningsdatabase");
@@ -189,14 +199,14 @@ public class Driver {
 			
 			final String sql1 = "CREATE TABLE IF NOT EXISTS `excercise`( /* class */\r\n" + 
 					"`ExcerciseID` int(11) not null primary key,\r\n" + 
-					"`Name` varchar(20) not null,\r\n" + 
-					"`Type` varchar(20) not null,\r\n" + 
+					"`Name` varchar(30) not null,\r\n" + 
+					"`Type` varchar(30) not null,\r\n" + 
 					"constraint check(`Type`=\"fixed_equipment_excercise\" or `Type`=\"bodyweight_excercise\")\r\n" + 
 					")";
 			
 			final String sql2 = "CREATE TABLE IF NOT EXISTS `excercisegroup`( /* class */\r\n" + 
 					"`ExcerciseGroupID` int(11) not null primary key,\r\n" + 
-					"`Name` varchar(20) not null\r\n" + 
+					"`Name` varchar(30) not null\r\n" + 
 					")";
 			
 			final String sql4 = "CREATE TABLE IF NOT EXISTS `contains_excercise`( /* junction table */\r\n" + 
@@ -234,7 +244,7 @@ public class Driver {
 			
 			final String sql8 = "CREATE TABLE IF NOT EXISTS `equipment`( /* class */\r\n" + 
 					"`EquipmentID` int(11) not null primary key,\r\n" + 
-					"`Name` varchar(20) not null,\r\n" + 
+					"`Name` varchar(30) not null,\r\n" + 
 					"`Description` varchar(100) not null\r\n" + 
 					")";
 			
@@ -276,11 +286,16 @@ public class Driver {
 				String cmd = input.next();
 				if (cmd.equals("help")) {
 					String s = "TO INSERT:\n\t";
-					s += "post-<tablename>-<value 1>-<value 2>-<value n>\n\n";
+					s += "post-<tablename>\n\n";
 					s += "TO RETRIEVE:\n\t";
 					s += "get-<tablename>\n\n";
 					s += "TABLES:\n\t";
-					s += "excercise(ID, Name, Type)\n\t workout(Date=yy/mm/dd , Time=hh:mm, Lenght, Performance, PersonalPerformance)\n\t equipment(ID, Name, Description)";
+					s += "exercise\n\t"
+							+ "workout\n\t"
+							+ "equipment\n\t"
+							+ "exercisegroup\n\n";
+					s += "TO GET exercises in timeintervall:\n\t"
+							+ "get-exercise-time";
 					System.out.println(s);
 				}
 				else {
