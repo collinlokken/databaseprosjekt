@@ -94,7 +94,9 @@ public class Driver {
 					int workoutID = Integer.parseInt(ls[2]);
 					
 					String[] dates = ls[3].split("/");
+					String[] times = ls[4].split(":");
 					int date;
+					int time;
 					if(dates.length==3) {
 						date = 10000*Integer.parseInt(dates[0]) + 100*Integer.parseInt(dates[1]) + Integer.parseInt(dates[2]) ;
 					}
@@ -102,8 +104,14 @@ public class Driver {
 						System.out.println("Wrong date format! Should be dd/mm/yy");
 						return;
 					}
+					if(times.length==2) {
+						time = 100*Integer.parseInt(times[0]) + Integer.parseInt(times[1]);
+					}
+					else {
+						System.out.println("Wrong time format! Should be hh:mm");
+						return;
+					}
 					// 030419
-					int time = Integer.parseInt(ls[4]);
 					int length = Integer.parseInt(ls[5]);
 					int performance = Integer.parseInt(ls[6]);
 					int personalShape = Integer.parseInt(ls[7]);
@@ -184,14 +192,6 @@ public class Driver {
 					"`Name` varchar(20) not null\r\n" + 
 					")";
 			
-			final String sql3 = "CREATE TABLE IF NOT EXISTS `contains_excercisegruoup`( /* junction table */\r\n" + 
-					"`WorkoutID` int(11) not null,\r\n" + 
-					"`ExcerciseGroupID` int(11) not null,\r\n" + 
-					"primary key (`WorkoutID`,`ExcerciseGroupID`),\r\n" + 
-					"constraint foreign key(`WorkoutID`) references `workout`(`WorkoutID`)on delete cascade on update cascade,\r\n" + 
-					"constraint foreign key(`ExcerciseGroupID`) references `excercisegroup`(`ExcerciseGroupID`) on delete cascade on update cascade\r\n" + 
-					")";
-			
 			final String sql4 = "CREATE TABLE IF NOT EXISTS `contains_excercise`( /* junction table */\r\n" + 
 					"`ExcerciseID` int(11) not null,\r\n" + 
 					"`ExcerciseGroupID` int(11) not null,\r\n" + 
@@ -251,7 +251,6 @@ public class Driver {
 			stmt.execute(sql0);
 			stmt.execute(sql1);
 			stmt.execute(sql2);
-			stmt.execute(sql3);
 			stmt.execute(sql4);
 			stmt.execute(sql5);
 			stmt.execute(sql6);
