@@ -67,4 +67,25 @@ public class ExerciseGroup {
             return null;
         }
     }
+
+    public Excercise[] findExercises(Connection conn) {
+        try {
+            String query = "SELECT * FROM contains_excercise WHERE ExcerciseGroupID=" + this.excerciseGroupID;
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+
+            List<Excercise> excercises = new ArrayList<>();
+
+            while(rs.next()) {
+                Excercise excercise = new Excercise(rs.getInt("ExcerciseID"), rs.getString("name"), rs.getString("type"));
+
+                excercises.add(excercise);
+            }
+            return excercises.toArray(new Excercise[excercises.size()]);
+        } catch (SQLException e) {
+            System.out.println("- ERROR -");
+            System.out.println(e);
+            return null;
+        }
+    }
 }
