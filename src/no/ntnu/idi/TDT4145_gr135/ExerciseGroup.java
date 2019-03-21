@@ -42,6 +42,8 @@ public class ExerciseGroup {
 
             preparedStatement.setInt(1, excerciseGroupID);
             preparedStatement.setString(2, name);
+
+            preparedStatement.execute();
         } catch (SQLException e) {
             System.out.println("- ERROR -");
             System.out.println(e);

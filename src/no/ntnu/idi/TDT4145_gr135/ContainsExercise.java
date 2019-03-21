@@ -38,6 +38,8 @@ public class ContainsExercise {
 
             preparedStatement.setInt(1, excerciseID);
             preparedStatement.setInt(2, excerciseGroupID);
+
+            preparedStatement.execute();
         } catch (SQLException e) {
             System.out.println("- ERROR -");
             System.out.println(e);
