@@ -14,6 +14,10 @@ public class ExerciseGroup {
         this.name = name;
     }
 
+    public ExerciseGroup(int excerciseGroupID) {
+        this.excerciseGroupID = excerciseGroupID;
+    }
+
     public int getExcerciseGroupID() {
         return excerciseGroupID;
     }
